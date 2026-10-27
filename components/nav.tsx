@@ -24,7 +24,9 @@ function AppNavItem({
   ...props
 }: LinkProps & HTMLAttributes<HTMLAnchorElement>) {
   const pathname = usePathname()
-  const isActive = pathname === props.href
+  const isActive =
+    pathname === props.href ||
+    (props.href !== '/' && pathname.startsWith(`${props.href}/`))
 
   return (
     <Link

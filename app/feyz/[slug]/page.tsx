@@ -6,6 +6,7 @@ import { getRecords } from '@/utils/airtable'
 import { AirtableRecord } from '@/types/airtable'
 import Feyz from '@/components/feyz'
 import Nav from '@/components/nav'
+import { findFeyzBySlug } from '@/utils/find-feyz-by-slug'
 
 export const revalidate = 21600 // 60 * 60 * 6 = 6 hours
 
@@ -14,7 +15,7 @@ export async function generateStaticParams() {
   return data
     .filter((item) => Boolean(item.fields?.title))
     .map((item) => ({
-      slug: slugify(item.fields.title, { lower: true, strict: true })
+      slug: slugify(item.fields.title || '', { lower: true, strict: true })
     }))
 }
 
@@ -25,15 +26,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const data: AirtableRecord[] = await getRecords({})
-  const feyz = data.find(
-    (item) =>
-      item.fields?.title &&
-      slugify(item.fields.title, { lower: true, strict: true }) === slug
-  )
+  const feyz = findFeyzBySlug(data, slug)
 
   if (!feyz) return {}
 
-  const title = feyz.fields.title
+  const title = feyz.fields.title || ''
   const description = feyz.fields.summary || title
 
   return {
@@ -56,11 +53,7 @@ export default async function FeyzDetail({
 }) {
   const { slug } = await params
   const data: AirtableRecord[] = await getRecords({})
-  const feyz = data.find(
-    (item) =>
-      item.fields?.title &&
-      slugify(item.fields.title, { lower: true, strict: true }) === slug
-  )
+  const feyz = findFeyzBySlug(data, slug)
 
   if (!feyz) {
     notFound()

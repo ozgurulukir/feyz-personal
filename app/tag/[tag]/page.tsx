@@ -4,6 +4,8 @@ import Page from '@/components/page'
 import { DATA_PER_PAGE } from '@/utils/const'
 import { AirtableRecord } from '@/types/airtable'
 
+export const revalidate = 21600 // 6 hours
+
 export async function generateStaticParams() {
   const data: AirtableRecord[] = await getRecords({})
   const flattenTags = data.flatMap((item) =>

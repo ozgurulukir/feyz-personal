@@ -12,3 +12,4 @@ public/workbox*
 .env
 *.tsbuildinfo
 /out
+.rubik/

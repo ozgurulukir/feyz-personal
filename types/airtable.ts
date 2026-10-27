@@ -17,10 +17,10 @@ export interface AirtableRecord {
   id: string
   createdTime: string
   fields: {
-    title: string
-    url: string
-    createdDate: string
-    tags: string[]
+    title?: string
+    url?: string
+    createdDate?: string
+    tags?: string[]
     summary?: string
     source?: string
     draft?: boolean

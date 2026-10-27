@@ -1,5 +1,8 @@
 import { AirtableRecord } from '@/types/airtable'
 
+export const MAX_PAGINATION_DEPTH = 50
+export const FETCH_TIMEOUT_MS = 30000
+
 export async function getRecords({
   pageSize = 100,
   offset
@@ -26,15 +29,28 @@ export async function getRecords({
   url.searchParams.append('sort[0][direction]', 'desc')
   url.searchParams.append('filterByFormula', 'draft=FALSE()')
 
-  async function getData(): Promise<AirtableRecord[]> {
+  async function getData(depth = 0): Promise<AirtableRecord[]> {
+    if (depth > MAX_PAGINATION_DEPTH) {
+      console.error(
+        `Max pagination depth (${MAX_PAGINATION_DEPTH}) exceeded, stopping Airtable fetch`
+      )
+      return []
+    }
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
+
     try {
       const res = await fetch(url.toString(), {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${apiKey}`
         },
-        cache: 'force-cache'
+        cache: 'force-cache',
+        signal: controller.signal
       })
+
+      clearTimeout(timeoutId)
 
       if (!res.ok) {
         console.error(
@@ -48,12 +64,13 @@ export async function getRecords({
 
       if (data.offset) {
         url.searchParams.set('offset', data.offset)
-        const nextRecords = await getData()
+        const nextRecords = await getData(depth + 1)
         return [...records, ...nextRecords]
       }
 
       return records
     } catch (error) {
+      clearTimeout(timeoutId)
       console.error('Error fetching records from Airtable:', error)
       return []
     }

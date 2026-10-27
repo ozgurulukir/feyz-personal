@@ -28,9 +28,17 @@ export default function Feyz({ feyz }: { feyz: AirtableRecord }) {
   }
 
   const slug = slugify(title || '', { lower: true, strict: true })
-  const relativeDate = createdDate
-    ? DateTime.fromISO(createdDate).toRelative()
-    : null
+  let relativeDate: string | null = null
+  if (createdDate) {
+    try {
+      const dt = DateTime.fromISO(createdDate)
+      if (dt.isValid) {
+        relativeDate = dt.toRelative()
+      }
+    } catch {
+      relativeDate = null
+    }
+  }
 
   return (
     <article className="flex gap-8 py-10">
