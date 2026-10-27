@@ -1,3 +1,5 @@
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import { getRecords } from '@/utils/airtable'
 import Page from '@/components/page'
 import { DATA_PER_PAGE } from '@/utils/const'
@@ -12,18 +14,38 @@ export async function generateStaticParams() {
   return pages.map((page) => ({ page: page.toString() }))
 }
 
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ page: string }>
+}): Promise<Metadata> {
+  const { page } = await params
+  return {
+    title: `Sayfa ${page} - Feyz`,
+    description: `Feyz.li içerikleri - Sayfa ${page}`
+  }
+}
+
 export default async function Home({
   params
 }: {
   params: Promise<{ page: string }>
 }) {
   const { page } = await params
-  const data: AirtableRecord[] = await getRecords({})
+  const pageNumber = Number(page)
 
-  const filterData = data.slice(
-    (Number(page) - 1) * DATA_PER_PAGE,
-    Number(page) * DATA_PER_PAGE
-  )
+  if (isNaN(pageNumber) || pageNumber < 2) {
+    notFound()
+  }
+
+  const data: AirtableRecord[] = await getRecords({})
+  const startIndex = (pageNumber - 1) * DATA_PER_PAGE
+
+  if (data.length > 0 && startIndex >= data.length) {
+    notFound()
+  }
+
+  const filterData = data.slice(startIndex, pageNumber * DATA_PER_PAGE)
 
   return <Page rawData={data} totalData={data.length} data={filterData} />
 }

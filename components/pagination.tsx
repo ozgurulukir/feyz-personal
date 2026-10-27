@@ -14,6 +14,10 @@ export default function Pagination({
   totalData: number
   tag?: string
 }) {
+  if (totalData <= DATA_PER_PAGE) {
+    return null
+  }
+
   const PAGES = pageFill(totalData, DATA_PER_PAGE)
   const pathname = usePathname()
 

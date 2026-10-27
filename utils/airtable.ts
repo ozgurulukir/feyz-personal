@@ -1,15 +1,23 @@
 import { AirtableRecord } from '@/types/airtable'
-import { DATA_PER_PAGE } from '@/utils/const'
 
 export async function getRecords({
-  pageSize = DATA_PER_PAGE,
+  pageSize = 100,
   offset
 }: {
   pageSize?: number
   offset?: string
-}): Promise<AirtableRecord[]> {
+} = {}): Promise<AirtableRecord[]> {
   const baseId = process.env.AIRTABLE_BASE_ID || 'appeqvrnUnbvHVDmH'
   const tableName = process.env.AIRTABLE_TABLE_NAME || 'content'
+  const apiKey = process.env.AIRTABLE_API_KEY
+
+  if (!apiKey) {
+    console.warn(
+      'Warning: AIRTABLE_API_KEY is not defined in environment variables.'
+    )
+    return []
+  }
+
   const url = new URL(`/v0/${baseId}/${tableName}`, 'https://api.airtable.com')
   offset && url.searchParams.append('offset', offset)
   url.searchParams.append('pageSize', pageSize.toString())
@@ -19,25 +27,35 @@ export async function getRecords({
   url.searchParams.append('filterByFormula', 'draft=FALSE()')
 
   async function getData(): Promise<AirtableRecord[]> {
-    const res = await fetch(url.toString(), {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`
-      },
-      cache: 'force-cache'
-    })
-    const data = await res.json()
+    try {
+      const res = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${apiKey}`
+        },
+        cache: 'force-cache'
+      })
 
-    if (data.offset) {
-      url.searchParams.set('offset', data.offset)
+      if (!res.ok) {
+        console.error(
+          `Failed to fetch from Airtable: HTTP ${res.status} ${res.statusText}`
+        )
+        return []
+      }
 
-      const records = await getData()
+      const data = await res.json()
+      const records = Array.isArray(data.records) ? data.records : []
 
-      return Array.isArray(records)
-        ? [...data.records, ...records]
-        : [...data.records]
-    } else {
-      return data.records
+      if (data.offset) {
+        url.searchParams.set('offset', data.offset)
+        const nextRecords = await getData()
+        return [...records, ...nextRecords]
+      }
+
+      return records
+    } catch (error) {
+      console.error('Error fetching records from Airtable:', error)
+      return []
     }
   }
 

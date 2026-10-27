@@ -355,7 +355,7 @@ export interface AirtableRecord {
 | `/[page]` | `app/[page]/page.tsx` | Ana sayfa sayfalanmış içerik listesi |
 | `/tag/[tag]` | `app/tag/[tag]/page.tsx` | Belirli bir etikete ait ilk sayfa |
 | `/tag/[tag]/[page]` | `app/tag/[tag]/[page]/page.tsx` | Belirli bir etikete ait sayfalanmış liste |
-| `/feyz/[slug]` | `components/feyz.tsx` | Tekil içerik için göreli zaman bağlantısı |
+| `/feyz/[slug]` | `app/feyz/[slug]/page.tsx` | Tekil içerik detay / kalıcı bağlantı (permalink) sayfası |
 
 ---
 

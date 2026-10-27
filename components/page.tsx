@@ -14,8 +14,10 @@ export default function Page({
   totalData: number
   tag?: string
 }) {
-  const flattenTags = rawData.flatMap((item) => item.fields.tags)
-  const tags = [...new Set(flattenTags)]
+  const flattenTags = rawData.flatMap((item) =>
+    Array.isArray(item.fields?.tags) ? item.fields.tags : []
+  )
+  const tags = [...new Set(flattenTags)].filter(Boolean)
 
   return (
     <>
