@@ -10,4 +10,5 @@ public/workbox*
 .vercel
 
 .env
+*.tsbuildinfo
 /out

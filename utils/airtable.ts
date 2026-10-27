@@ -8,10 +8,9 @@ export async function getRecords({
   pageSize?: number
   offset?: string
 }): Promise<AirtableRecord[]> {
-  const url = new URL(
-    `/v0/appeqvrnUnbvHVDmH/content`,
-    'https://api.airtable.com'
-  )
+  const baseId = process.env.AIRTABLE_BASE_ID || 'appeqvrnUnbvHVDmH'
+  const tableName = process.env.AIRTABLE_TABLE_NAME || 'content'
+  const url = new URL(`/v0/${baseId}/${tableName}`, 'https://api.airtable.com')
   offset && url.searchParams.append('offset', offset)
   url.searchParams.append('pageSize', pageSize.toString())
   url.searchParams.append('view', 'Grid view')

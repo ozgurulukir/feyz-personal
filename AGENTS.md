@@ -71,13 +71,16 @@ Path alias: `@/*` maps to the repo root (e.g. `@/components/page`, `@/utils/cons
 
 - `getRecords({ pageSize, offset })` fetches Airtable content, sorted by `createdDate` desc,
   with `filterByFormula: draft=FALSE()`. Uses `cache: 'force-cache'` for build-time caching
-  (Next 15+ defaults fetch to no-store).
+  (Next 15+ defaults fetch to no-store). Configurable via `AIRTABLE_BASE_ID` and `AIRTABLE_TABLE_NAME`.
+- Schema template is defined in `airtable-template.csv` with fields: `title`, `url`, `summary`,
+  `source`, `tags` (with special `quote` behavior), `createdDate`, `image`, `draft`, `author`.
 - Content pages export `export const revalidate = 21600` (6 hours).
 - Dynamic tag routes live under `app/tag/[tag]/...`.
 
 ## Environment
 
-- Requires `AIRTABLE_API_KEY` in a local `.env` file (gitignored).
+- Requires `AIRTABLE_API_KEY` in a local `.env` file (gitignored). See `.env.example`.
+- Optional: `AIRTABLE_BASE_ID` (defaults to `appeqvrnUnbvHVDmH`) and `AIRTABLE_TABLE_NAME` (defaults to `content`).
 - Airtable images are served from `v5.airtableusercontent.com` (configured in
   `next.config.js` `images.remotePatterns`).
 
