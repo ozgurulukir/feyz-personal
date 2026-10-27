@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "format": "prettier --write 'app/**/*.{ts,tsx,css}' 'components/**/*.{ts,tsx,css}' 'utils/**/*.{ts,tsx,css}' 'types/**/*.ts'",
-    "format:check": "prettier --check 'app/**/*.{ts,tsx,css}' 'components/**/*.{ts,tsx,css}' 'utils/**/*.{ts,tsx,css}' 'types/**/*.ts'"
+    "format": "prettier --write 'app/**/*.{ts,tsx,css}' 'components/**/*.{ts,tsx,css}' 'utils/**/*.{ts,tsx,css}' 'types/**/*.ts' 'scripts/**/*.ts'",
+    "format:check": "prettier --check 'app/**/*.{ts,tsx,css}' 'components/**/*.{ts,tsx,css}' 'utils/**/*.{ts,tsx,css}' 'types/**/*.ts' 'scripts/**/*.ts'",
+    "import:bookmarks": "node --no-warnings scripts/import-bookmarks.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

@@ -24,6 +24,7 @@ Mevcut Canlı Veri Tabanı: [Airtable Shared Base](https://airtable.com/shrTIyJJ
   - [2.5 Yeni Etiket Sayfaları ve Filtreleme](#25-yeni-etiket-sayfaları-ve-filtreleme)
   - [2.6 Vercel Üzerinde Dağıtım (Deployment)](#26-vercel-üzerinde-dağıtım-deployment)
   - [2.7 CLI Araçları ile Yönetim (Vercel & Airtable CLI)](#27-cli-araçları-ile-yönetim-vercel--airtable-cli)
+  - [2.8 Tarayıcı Yer İmlerini (Bookmarks) İçe Aktarma](#28-tarayıcı-yer-imlerini-bookmarks-içe-aktarma)
 - [3. Referans (Reference)](#3-referans-reference)
   - [3.1 Airtable Tablo Şeması](#31-airtable-tablo-şeması)
   - [3.2 Ortam Değişkenleri Referansı](#32-ortam-değişkenleri-referansı)
@@ -271,6 +272,39 @@ npx airtable-cli add \
   createdDate "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 ```
 
+### 2.8 Tarayıcı Yer İmlerini (Bookmarks) İçe Aktarma
+
+Chrome, Safari, Firefox, Arc veya Edge gibi tarayıcılardan dışa aktardığınız HTML yer imi dosyasını tek komutla doğrudan Airtable tablonuza aktarabilirsiniz.
+
+#### Yetkilendirme Notu
+
+Yer imi aktarımı Airtable'a yeni kayıt eklediği ve güncellediği için, `AIRTABLE_API_KEY` belirtecinizin hem `data.records:read` hem de `data.records:write` yetkilerine sahip olması gerekir.
+
+#### Öne Çıkan Özellikler
+
+- **Klasör Filtresi (`--folder`):** Yalnızca belirlediğiniz klasördeki linkleri aktarır (örn: sadece `Feyz` veya `Okuma`).
+- **Akıllı Birleştirme (Selective Upsert):** Aynı URL veritabanında zaten varsa önceki verilerinizi ezmez; **sadece boş olan alanları** (özet, kaynak, etiket vb.) tamamlar.
+- **Tarih Filtresi (`--since`):** Belirli bir tarihten (`2024-01-01`) veya son X günden (`30d`) sonra eklenenleri seçer.
+- **Alan Adı Filtresi (`--exclude`):** Sosyal medya, video veya arama portallarını hariç tutar.
+- **Batch API Desteği:** Airtable API'sine 10'arlı paketler halinde göndererek kota (rate limit) aşımını engeller.
+- **Simülasyon (`--dry-run`):** Veritabanına yazmadan nelerin ekleneceğini ve güncelleneceğini terminalde önizler.
+
+#### Kullanım Örnekleri
+
+```bash
+# 1. bookmarks.html dosyasını simüle edin (Airtable'a hiçbir şey yazmaz)
+npm run import:bookmarks -- --dry-run
+
+# 2. Sadece "Feyz" klasöründeki yer imlerini aktarın
+npm run import:bookmarks -- --folder="Feyz"
+
+# 3. Özel bir dosyadan, ek etiketle ve youtube linklerini hariç tutarak aktarın
+npm run import:bookmarks -- --file=yerimlerim.html --folder="Okuma" --tag="Teknoloji" --exclude=youtube.com
+
+# 4. Son 30 günde eklenenleri taslak (draft=true) olarak aktarın
+npm run import:bookmarks -- --since=30d --draft=true
+```
+
 ---
 
 ## 3. Referans (Reference)
@@ -309,6 +343,7 @@ Projenin teknik veri modelleri, ortam değişkenleri ve komut tanımları.
 | `npm run lint` | ESLint kurallarını tüm proje dosyaları üzerinde denetler (`eslint .`). |
 | `npm run format` | Prettier ile tüm kaynak kodları otomatik biçimlendirir. |
 | `npm run format:check` | Kodların Prettier kurallarına uygunluğunu doğrular (dosya yazmaz). |
+| `npm run import:bookmarks` | Tarayıcı HTML yer imi dosyasını Airtable'a filtreleyip aktarır. |
 
 ### 3.4 TypeScript Arayüzleri
 
