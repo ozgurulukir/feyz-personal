@@ -20,13 +20,9 @@ export default function Pagination({
   const isActiveFirstPage = pathname === `/tag/${tag}` || pathname === '/'
 
   return (
-    <div className="mt-8 flex items-center gap-3 font-display text-4xl">
+    <div className="font-display mt-8 flex items-center gap-3 text-4xl">
       {tag ? (
-        <Item
-          href={`/tag/[${tag}]`}
-          as={`/tag/${tag}`}
-          active={isActiveFirstPage}
-        >
+        <Item href={`/tag/${tag}`} active={isActiveFirstPage}>
           1
         </Item>
       ) : (
@@ -40,16 +36,11 @@ export default function Pagination({
           pathname === `/tag/${tag}/${page}` || pathname === `/${page}`
 
         return tag ? (
-          <Item
-            key={page}
-            href={`/tag/[${tag}]/[page]`}
-            as={`/tag/${tag}/${page}`}
-            active={isActivePage}
-          >
+          <Item key={page} href={`/tag/${tag}/${page}`} active={isActivePage}>
             {page}
           </Item>
         ) : (
-          <Item key={page} href="/[page]" as={`/${page}`} active={isActivePage}>
+          <Item key={page} href={`/${page}`} active={isActivePage}>
             {page}
           </Item>
         )

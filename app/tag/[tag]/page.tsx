@@ -10,10 +10,15 @@ export async function generateStaticParams() {
   return uniqTags.map((tag) => ({ tag }))
 }
 
-export default async function Tag({ params }: { params: { tag: string } }) {
+export default async function Tag({
+  params
+}: {
+  params: Promise<{ tag: string }>
+}) {
+  const { tag } = await params
   const data: AirtableRecord[] = await getRecords({})
   const dataFilterByTag = data.filter((item) => {
-    return item.fields?.tags.includes(params.tag)
+    return item.fields?.tags.includes(tag)
   })
   const filterData = dataFilterByTag.slice(0, DATA_PER_PAGE)
 
@@ -22,7 +27,7 @@ export default async function Tag({ params }: { params: { tag: string } }) {
       rawData={data}
       data={filterData}
       totalData={dataFilterByTag.length}
-      tag={params.tag}
+      tag={tag}
     />
   )
 }

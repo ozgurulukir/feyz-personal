@@ -1,8 +1,10 @@
-import React from 'react'
+import { HTMLAttributes, ReactNode } from 'react'
 import cx from '@/utils/cx'
 import Container from '@/components/container'
 
-export interface IAppFooter extends React.HTMLAttributes<HTMLDivElement> {}
+export interface IAppFooter extends HTMLAttributes<HTMLDivElement> {
+  children?: ReactNode
+}
 
 export default function AppFooter({ className, ...props }: IAppFooter) {
   return (

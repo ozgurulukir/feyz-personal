@@ -11,7 +11,7 @@ export default function Feyz({ feyz }: { feyz: AirtableRecord }) {
   const cover = image && image[0]
 
   const isQuote = Array.isArray(tags) ? tags.includes('quote') : false
-  const sourceUrl = source && new URL(source)
+  const sourceUrl = source ? new URL(source) : undefined
   const slug = slugify(title, { lower: true, strict: true })
 
   return (
@@ -25,7 +25,7 @@ export default function Feyz({ feyz }: { feyz: AirtableRecord }) {
           </h2>
         ) : (
           <>
-            <h2 className="font-display text-3xl font-bold leading-snug">
+            <h2 className="font-display text-3xl leading-snug font-bold">
               <a target="_blank" href={url} className="visited:text-zinc-600">
                 <Balancer>{title}</Balancer>
               </a>
@@ -35,7 +35,7 @@ export default function Feyz({ feyz }: { feyz: AirtableRecord }) {
         )}
 
         <footer className="mt-4 flex items-center gap-1 opacity-40">
-          <Link href="/feyz/[slug]" as={`/feyz/${slug}`} className="">
+          <Link href={`/feyz/${slug}`}>
             {DateTime.fromISO(createdDate).toRelative()}
           </Link>
 

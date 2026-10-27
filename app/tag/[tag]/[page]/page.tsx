@@ -7,7 +7,7 @@ import { pageFill } from '@/utils/helper'
 export async function generateStaticParams({
   params
 }: {
-  params: { tag: string; page: number }
+  params: { tag: string; page: string }
 }) {
   const data: AirtableRecord[] = await getRecords({})
   const dataFilterByTag = data.filter((item) =>
@@ -20,16 +20,15 @@ export async function generateStaticParams({
 export default async function Tag({
   params
 }: {
-  params: { tag: string; page: number }
+  params: Promise<{ tag: string; page: string }>
 }) {
+  const { tag, page } = await params
   const data: AirtableRecord[] = await getRecords({})
-  const dataFilterByTag = data.filter((item) =>
-    item.fields?.tags.includes(params.tag)
-  )
+  const dataFilterByTag = data.filter((item) => item.fields?.tags.includes(tag))
 
   const filterData = dataFilterByTag.slice(
-    (params.page - 1) * DATA_PER_PAGE,
-    params.page * DATA_PER_PAGE
+    (Number(page) - 1) * DATA_PER_PAGE,
+    Number(page) * DATA_PER_PAGE
   )
 
   return (
@@ -37,7 +36,7 @@ export default async function Tag({
       rawData={data}
       data={filterData}
       totalData={dataFilterByTag.length}
-      tag={params.tag}
+      tag={tag}
     />
   )
 }

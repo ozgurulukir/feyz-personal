@@ -2,7 +2,6 @@ import Feyz from '@/components/feyz'
 import { AirtableRecord } from '@/types/airtable'
 import Pagination from '@/components/pagination'
 import Nav from '@/components/nav'
-import React from 'react'
 
 export default function Page({
   rawData = [],

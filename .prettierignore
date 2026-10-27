@@ -1,0 +1,8 @@
+node_modules
+.next
+out
+build
+public/ui
+public/sw*
+public/workbox*
+*.local

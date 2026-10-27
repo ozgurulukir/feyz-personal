@@ -12,12 +12,17 @@ export async function generateStaticParams() {
   return pages.map((page) => ({ page: page.toString() }))
 }
 
-export default async function Home({ params }: { params: { page: number } }) {
+export default async function Home({
+  params
+}: {
+  params: Promise<{ page: string }>
+}) {
+  const { page } = await params
   const data: AirtableRecord[] = await getRecords({})
 
   const filterData = data.slice(
-    (params.page - 1) * DATA_PER_PAGE,
-    params.page * DATA_PER_PAGE
+    (Number(page) - 1) * DATA_PER_PAGE,
+    Number(page) * DATA_PER_PAGE
   )
 
   return <Page rawData={data} totalData={data.length} data={filterData} />

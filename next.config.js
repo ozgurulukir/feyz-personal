@@ -2,11 +2,13 @@
 const nextConfig = {
   reactStrictMode: false,
   // output: 'export',
-  experimental: {
-    appDir: true
-  },
   images: {
-    domains: ['v5.airtableusercontent.com']
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'v5.airtableusercontent.com'
+      }
+    ]
   }
 }
 

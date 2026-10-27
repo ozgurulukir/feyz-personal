@@ -24,7 +24,8 @@ export async function getRecords({
       method: 'GET',
       headers: {
         Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`
-      }
+      },
+      cache: 'force-cache'
     })
     const data = await res.json()
 
