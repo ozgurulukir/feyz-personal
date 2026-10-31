@@ -1,0 +1,5 @@
+export const SITE_TITLE = 'Feyz'
+export const SITE_DESCRIPTION = 'Kafa açıcı içerikler'
+export const SITE_URL = 'https://feyz.vercel.app'
+export const SITE_TWITTER_HANDLE = '@ademilter'
+export const SITE_LANGUAGE = 'tr'

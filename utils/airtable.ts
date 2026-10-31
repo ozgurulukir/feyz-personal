@@ -3,6 +3,9 @@ import { AirtableRecord } from '@/types/airtable'
 export const MAX_PAGINATION_DEPTH = 50
 export const FETCH_TIMEOUT_MS = 30000
 
+let cachedRecords: AirtableRecord[] | null = null
+let cachePromise: Promise<AirtableRecord[]> | null = null
+
 export async function getRecords({
   pageSize = 100,
   offset
@@ -10,6 +13,19 @@ export async function getRecords({
   pageSize?: number
   offset?: string
 } = {}): Promise<AirtableRecord[]> {
+  const isDefaultCall = pageSize === 100 && offset === undefined
+
+  // Module-level singleton cache for the default getRecords({}) call.
+  // Ensures a single Airtable fetch per module lifetime across all SSR callers.
+  if (isDefaultCall) {
+    if (cachedRecords !== null) {
+      return cachedRecords
+    }
+    if (cachePromise !== null) {
+      return cachePromise
+    }
+  }
+
   const baseId = process.env.AIRTABLE_BASE_ID || 'appeqvrnUnbvHVDmH'
   const tableName = process.env.AIRTABLE_TABLE_NAME || 'content'
   const apiKey = process.env.AIRTABLE_API_KEY
@@ -76,5 +92,15 @@ export async function getRecords({
     }
   }
 
-  return getData()
+  const fetchPromise = getData()
+
+  if (isDefaultCall) {
+    cachePromise = fetchPromise
+    cachePromise.then((records) => {
+      cachedRecords = records
+      cachePromise = null
+    })
+  }
+
+  return fetchPromise
 }

@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import { ReactNode } from 'react'
 import cx from '@/utils/cx'
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, SITE_TWITTER_HANDLE } from '@/utils/site'
 import AnalyticsWrapper from './analytics'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
@@ -56,27 +57,24 @@ const interDisplay = localFont({
   ]
 })
 
-const title = 'Feyz'
-const description = 'Kafa açıcı içerikler'
-
 export const metadata: Metadata = {
   title: {
-    default: `${title} - ${description}`,
+    default: `${SITE_TITLE} - ${SITE_DESCRIPTION}`,
     template: `%s | Feyz`
   },
-  description,
+  description: SITE_DESCRIPTION,
   openGraph: {
-    title,
-    description,
-    url: 'https://feyz.vercel.app',
-    siteName: title,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: SITE_TITLE,
     type: 'website'
   },
   twitter: {
     card: 'summary',
-    title,
-    description,
-    site: '@ademilter'
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    site: SITE_TWITTER_HANDLE
   },
   robots: {
     index: true,
