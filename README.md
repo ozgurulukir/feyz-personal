@@ -333,6 +333,11 @@ Projenin teknik veri modelleri, ortam değişkenleri ve komut tanımları.
 | `AIRTABLE_API_KEY` | Evet | - | Airtable REST API erişim belirteci (Personal Access Token) |
 | `AIRTABLE_BASE_ID` | Hayır | `appeqvrnUnbvHVDmH` | Hedef Airtable base kimliği |
 | `AIRTABLE_TABLE_NAME` | Hayır | `content` | Sorgulanacak Airtable tablosu |
+| `NEXT_PUBLIC_SITE_TITLE` | Hayır | `Feyz` | Sitenin ana başlığı ve marka adı |
+| `NEXT_PUBLIC_SITE_DESCRIPTION` | Hayır | `Kafa açıcı içerikler` | Varsayılan meta ve OpenGraph açıklaması |
+| `NEXT_PUBLIC_SITE_URL` | Hayır | `https://feyz.vercel.app` | Kalıcı bağlantılar, robots.txt ve sitemap için kök URL |
+| `NEXT_PUBLIC_SITE_TWITTER_HANDLE` | Hayır | `@ademilter` | Twitter kartları için kullanıcı adı |
+| `NEXT_PUBLIC_SITE_LANGUAGE` | Hayır | `tr` | HTML `lang` niteliği |
 
 ### 3.3 Komut Referansı
 

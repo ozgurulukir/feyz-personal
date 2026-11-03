@@ -9,7 +9,8 @@ import {
   SITE_TITLE,
   SITE_DESCRIPTION,
   SITE_URL,
-  SITE_TWITTER_HANDLE
+  SITE_TWITTER_HANDLE,
+  SITE_LANGUAGE
 } from '@/utils/site'
 import AnalyticsWrapper from './analytics'
 import Header from '@/components/header'
@@ -19,7 +20,7 @@ import Container from '@/components/container'
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
-      lang="tr"
+      lang={SITE_LANGUAGE}
       className={cx(
         inter.variable,
         interDisplay.variable,
@@ -65,7 +66,7 @@ const interDisplay = localFont({
 export const metadata: Metadata = {
   title: {
     default: `${SITE_TITLE} - ${SITE_DESCRIPTION}`,
-    template: `%s | Feyz`
+    template: `%s | ${SITE_TITLE}`
   },
   description: SITE_DESCRIPTION,
   openGraph: {

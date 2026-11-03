@@ -3,6 +3,7 @@ import { getRecords } from '@/utils/airtable'
 import Page from '@/components/page'
 import { DATA_PER_PAGE } from '@/utils/const'
 import { AirtableRecord } from '@/types/airtable'
+import { SITE_TITLE } from '@/utils/site'
 
 export const revalidate = 21600 // 6 hours
 
@@ -23,7 +24,7 @@ export async function generateMetadata({
   const { tag } = await params
   const decodedTag = decodeURIComponent(tag)
   return {
-    title: `${decodedTag} - Feyz`,
+    title: `${decodedTag} - ${SITE_TITLE}`,
     description: `${decodedTag} etiketine ait içerikler`
   }
 }

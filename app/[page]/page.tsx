@@ -5,6 +5,7 @@ import Page from '@/components/page'
 import { DATA_PER_PAGE } from '@/utils/const'
 import { pageFill } from '@/utils/helper'
 import { AirtableRecord } from '@/types/airtable'
+import { SITE_TITLE } from '@/utils/site'
 
 export const revalidate = 21600 // 60 * 60 * 6 = 6 hours
 
@@ -21,8 +22,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { page } = await params
   return {
-    title: `Sayfa ${page} - Feyz`,
-    description: `Feyz.li içerikleri - Sayfa ${page}`
+    title: `Sayfa ${page} - ${SITE_TITLE}`,
+    description: `${SITE_TITLE} içerikleri - Sayfa ${page}`
   }
 }
 

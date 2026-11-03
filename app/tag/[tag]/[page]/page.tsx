@@ -5,6 +5,7 @@ import Page from '@/components/page'
 import { DATA_PER_PAGE } from '@/utils/const'
 import { AirtableRecord } from '@/types/airtable'
 import { pageFill } from '@/utils/helper'
+import { SITE_TITLE } from '@/utils/site'
 
 export async function generateStaticParams() {
   const data: AirtableRecord[] = await getRecords({})
@@ -31,7 +32,7 @@ export async function generateMetadata({
   const { tag, page } = await params
   const decodedTag = decodeURIComponent(tag)
   return {
-    title: `${decodedTag} - Sayfa ${page} - Feyz`,
+    title: `${decodedTag} - Sayfa ${page} - ${SITE_TITLE}`,
     description: `${decodedTag} etiketine ait içerikler - Sayfa ${page}`
   }
 }

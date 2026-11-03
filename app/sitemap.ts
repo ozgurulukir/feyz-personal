@@ -4,8 +4,7 @@ import { getRecords } from '@/utils/airtable'
 import { DATA_PER_PAGE } from '@/utils/const'
 import { pageFill } from '@/utils/helper'
 import { AirtableRecord } from '@/types/airtable'
-
-const SITE_URL = 'https://feyz.vercel.app'
+import { SITE_URL } from '@/utils/site'
 
 export const revalidate = 21600 // 60 * 60 * 6 = 6 hours
 
