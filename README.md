@@ -25,6 +25,7 @@ Mevcut Canlı Veri Tabanı: [Airtable Shared Base](https://airtable.com/shrTIyJJ
   - [2.6 Vercel Üzerinde Dağıtım (Deployment)](#26-vercel-üzerinde-dağıtım-deployment)
   - [2.7 CLI Araçları ile Yönetim (Vercel & Airtable CLI)](#27-cli-araçları-ile-yönetim-vercel--airtable-cli)
   - [2.8 Tarayıcı Yer İmlerini (Bookmarks) İçe Aktarma](#28-tarayıcı-yer-imlerini-bookmarks-içe-aktarma)
+  - [2.9 Birim Testleri Çalıştırma (Unit Testing)](#29-birim-testleri-çalıştırma-unit-testing)
 - [3. Referans (Reference)](#3-referans-reference)
   - [3.1 Airtable Tablo Şeması](#31-airtable-tablo-şeması)
   - [3.2 Ortam Değişkenleri Referansı](#32-ortam-değişkenleri-referansı)
@@ -142,7 +143,7 @@ Bir içeriğe sağ tarafta görünecek küçük kapak görseli bağlamak için:
 2. Görsel dosyanızı sürükleyip bırakın (veya URL ile yükleyin).
 3. CSV ile toplu aktarım yapıyorsanız, `image` sütununa doğrudan genel erişimli bir resim linki (örn. Unsplash URL'i) verin; Airtable dosyayı otomatik indirecektir.
 
-Next.js `Image` bileşeni görseli otomatik optimize eder ve `v5.airtableusercontent.com` adresinden çeker.
+Next.js `Image` bileşeni görseli otomatik optimize eder ve `next.config.js` içinde yapılandırılmış `*.airtableusercontent.com` ile `dl.airtable.com` adreslerinden çeker.
 
 ### 2.4 Taslak İçerik Yönetimi
 
@@ -167,9 +168,11 @@ Feyz.li, Vercel platformuna özgü Incremental Static Regeneration (ISR) ve gör
 #### Yöntem A: GitHub Entegrasyonu ile Otomatik Dağıtım (Önerilen)
 
 1. Kodlarınızı GitHub deponuza gönderin:
+
    ```bash
    git push origin main
    ```
+
 2. [Vercel Dashboard](https://vercel.com/new)'a gidin ve **Import Git Repository** ile deponuzu seçin.
 3. **Configure Project** ekranında **Environment Variables** bölümünü genişletin ve aşağıdaki anahtarları ekleyin:
    - `AIRTABLE_API_KEY`: Airtable Personal Access Token (Zorunlu)
@@ -200,6 +203,7 @@ npx vercel --prod
 #### İsteğe Bağlı: Airtable Değişikliklerinde Anında Dağıtım (Deploy Hook)
 
 Airtable'da yeni bir içerik eklendiğinde 6 saatlik ISR döngüsünü beklemeden derlemeyi anında tetiklemek için:
+
 1. Vercel projenizde **Settings** > **Git** > **Deploy Hooks** bölümüne gidin.
 2. `airtable-publish` adıyla yeni bir hook oluşturup verilen URL'i kopyalayın.
 3. Airtable tablonuzda **Automations** sekmesine gidin; bir içerik yayına alındığında (`draft = false`) bu webhook adresine `POST` isteği atan bir otomasyon kuralı tanımlayın.
@@ -236,7 +240,7 @@ npx vercel --prod
 
 Airtable web arayüzünü açmadan doğrudan terminalden içerik eklemek veya mevcut kayıtları listelemek için:
 
-##### 1. `cURL` (Doğrudan REST API) ile:
+##### 1. cURL (Doğrudan REST API)
 
 ```bash
 # Kayıtları listeleme (Draft olmayanlar)
@@ -260,7 +264,7 @@ curl -X POST "https://api.airtable.com/v0/$AIRTABLE_BASE_ID/$AIRTABLE_TABLE_NAME
   }'
 ```
 
-##### 2. `airtable-cli` Paketi ile:
+##### 2. airtable-cli Paketi
 
 ```bash
 # airtable-cli ile hızlı kayıt ekleme
@@ -306,6 +310,18 @@ npm run import:bookmarks -- --file=yerimlerim.html --folder="Okuma" --tag="Tekno
 npm run import:bookmarks -- --since=30d --draft=true
 ```
 
+### 2.9 Birim Testleri Çalıştırma (Unit Testing)
+
+Projedeki yardımcı fonksiyonlar (`utils/`), yer imi ayrıştırıcı (`scripts/parse-bookmarks.ts`) ve site meta veri yapılandırmaları Vitest ile test edilir:
+
+```bash
+# Tüm birim testleri tek seferde çalıştırın
+npm test
+
+# İzleme modunda (watch mode) testleri başlatın
+npx vitest
+```
+
 ---
 
 ## 3. Referans (Reference)
@@ -338,6 +354,7 @@ Projenin teknik veri modelleri, ortam değişkenleri ve komut tanımları.
 | `NEXT_PUBLIC_SITE_URL` | Hayır | `https://feyz.vercel.app` | Kalıcı bağlantılar, robots.txt ve sitemap için kök URL |
 | `NEXT_PUBLIC_SITE_TWITTER_HANDLE` | Hayır | `@ademilter` | Twitter kartları için kullanıcı adı |
 | `NEXT_PUBLIC_SITE_LANGUAGE` | Hayır | `tr` | HTML `lang` niteliği |
+| `VERCEL_PROJECT_PRODUCTION_URL` | Hayır | - | Vercel tarafından sağlanan otomatik üretim URL'i (`NEXT_PUBLIC_SITE_URL` yoksa fallback) |
 
 ### 3.3 Komut Referansı
 
@@ -347,6 +364,7 @@ Projenin teknik veri modelleri, ortam değişkenleri ve komut tanımları.
 | `npm run build` | Next.js üretim derlemesini çalıştırır ve statik sayfaları üretir. |
 | `npm run start` | Derlenmiş üretim paketini yerel sunucuda çalıştırır. |
 | `npm run lint` | ESLint kurallarını tüm proje dosyaları üzerinde denetler (`eslint .`). |
+| `npm test` | Vitest ile birim testleri (unit test) çalıştırır (`vitest run`). |
 | `npm run format` | Prettier ile tüm kaynak kodları otomatik biçimlendirir. |
 | `npm run format:check` | Kodların Prettier kurallarına uygunluğunu doğrular (dosya yazmaz). |
 | `npm run import:bookmarks` | Tarayıcı HTML yer imi dosyasını Airtable'a filtreleyip aktarır. |
@@ -375,10 +393,10 @@ export interface AirtableRecord {
   id: string
   createdTime: string
   fields: {
-    title: string
-    url: string
-    createdDate: string
-    tags: string[]
+    title?: string
+    url?: string
+    createdDate?: string
+    tags?: string[]
     summary?: string
     source?: string
     draft?: boolean
@@ -388,7 +406,11 @@ export interface AirtableRecord {
 }
 ```
 
+> **Not:** Airtable REST API boş bırakılan alanları JSON çıktısında döndürmediği için `fields` altındaki tüm özellikler TypeScript tarafında opsiyonel (`?:`) olarak tanımlanmıştır.
+
 ### 3.5 Rota ve Dizin Yapısı
+
+#### Rota Tablosu
 
 | Rota | Dosya | İşlev |
 |---|---|---|
@@ -397,12 +419,24 @@ export interface AirtableRecord {
 | `/tag/[tag]` | `app/tag/[tag]/page.tsx` | Belirli bir etikete ait ilk sayfa |
 | `/tag/[tag]/[page]` | `app/tag/[tag]/[page]/page.tsx` | Belirli bir etikete ait sayfalanmış liste |
 | `/feyz/[slug]` | `app/feyz/[slug]/page.tsx` | Tekil içerik detay / kalıcı bağlantı (permalink) sayfası |
+| `/sitemap.xml` | `app/sitemap.ts` | Arama motorları için dinamik site haritası |
+| `/robots.txt` | `app/robots.ts` | Arama motoru tarama kuralları |
+| 404 | `app/not-found.tsx` | Özel "Sayfa Bulunamadı" hata görünümü |
+
+#### Dizin Yapısı
+
+- `app/`: Next.js App Router sayfaları, düzenleri (`layout.tsx`), global stiller, fontlar ve meta veri rotaları.
+- `components/`: Tekrar kullanılabilir React bileşenleri (`feyz.tsx`, `container.tsx`, `header.tsx` vb.).
+- `scripts/`: Tarayıcı yer imlerini içe aktarma (`import-bookmarks.ts`) ve ayrıştırma betikleri (`parse-bookmarks.ts`).
+- `types/`: Airtable veri modelleri ve TypeScript tip tanımları (`airtable.ts`).
+- `utils/`: Veri çekme (`airtable.ts`), site meta veri SSOT (`site.ts`), yardımcı fonksiyonlar ve birim testler.
+- `public/`: Web uygulaması bildirimi (`manifest.json`) ve statik varlıklar.
 
 ---
 
 ## 4. Mimari ve Açıklama (Explanation)
 
-Tasarım kararları, çalışma ilkeleri ve mimari mantık.
+Tasarımsal kararlar, çalışma ilkeleri ve mimari mantık.
 
 ### 4.1 Mimari Yaklaşım: Neden Airtable + Next.js?
 
@@ -424,6 +458,7 @@ flowchart LR
 
 1. **`cache: 'force-cache'`:** Next.js veri çekme katmanında kullanılır. Derleme sırasında yinelenen API çağrıları engellenir ve yanıtlar yerel olarak önbelleğe alınır.
 2. **`export const revalidate = 21600`:** Sayfa düzeyinde 6 saatlik (21.600 saniye) ISR (Incremental Static Regeneration) tanımlıdır. Airtable'a yeni içerik eklendiğinde sitenin tamamını yeniden derlemeye gerek kalmadan sayfalar arka planda periyodik olarak yenilenir.
+3. **Modül Düzeyi Tekil Önbellek (In-Memory Singleton Promise):** `getRecords({})` varsayılan çağrısı modül ömrü boyunca bellekteki tekil önbellek (`cachedRecords`) ve `cachePromise` yapısını kullanır. Böylece aynı çalışma sürecinde tekrarlı API çağrısı yapılmaz.
 
 ### 4.3 Statik Sayfa Üretimi (SSG) ve Sayfalama Algoritması
 
@@ -438,6 +473,7 @@ Sitede dinamik sunucu render'ı (SSR) yerine tamamen statik dışa aktarım (SSG
 - **Anahtar Güvenliği:** `AIRTABLE_API_KEY` değişkeni `NEXT_PUBLIC_` ön eki taşımaz. Sadece sunucu tarafında (Node.js derleme ortamında) çalışır ve istemci bundle'ına kesinlikle dahil edilmez.
 - **Kota Aşımını Önleme:** Airtable standart API'si saniyede 5 istek limiti uygular. Feyz.li, sayfaları derlerken `force-cache` kullanarak Airtable'a gönderilen istek sayısını minimize eder.
 - **Özyinelemeli Sayfalama (Pagination Offset):** 100 kayıttan fazla veri olduğunda Airtable yanıtındaki `offset` parametresi takip edilerek tüm veri kümesi tek bir derleme akışında eksiksiz biçimde toplanır.
+- **Zaman Aşımı ve Sonsuz Döngü Koruması:** `FETCH_TIMEOUT_MS = 30000` (30 saniye `AbortController` zaman aşımı) ve `MAX_PAGINATION_DEPTH = 50` sınırı ile ağ gecikmeleri veya beklenmeyen sayfalama döngüleri engellenir.
 
 ---
 
