@@ -4,8 +4,6 @@
 
 Feyz.li, Airtable üzerinde tutulan kişisel veya kürasyon içeriklerini Next.js App Router mimarisiyle derleyip yüksek performanslı, SEO dostu statik sayfalar olarak sunar.
 
-Mevcut Canlı Veri Tabanı: [Airtable Shared Base](https://airtable.com/shrTIyJJFloiJ7Vwv/tblyXzwQCAWZlbl05)
-
 ---
 
 ## İçindekiler
