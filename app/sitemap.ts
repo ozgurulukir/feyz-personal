@@ -18,8 +18,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified:
         data.length > 0 && data[0]?.fields?.createdDate
           ? new Date(data[0].fields.createdDate)
-          : undefined,
-    },
+          : undefined
+    }
   ]
 
   // Gracefully return just the home page when there are no records (e.g. no API key)
@@ -33,13 +33,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .map((item) => {
       const slug = slugify(item.fields.title || '', {
         lower: true,
-        strict: true,
+        strict: true
       })
       return {
         url: `${SITE_URL}/feyz/${slug}`,
         lastModified: item.fields?.createdDate
           ? new Date(item.fields.createdDate)
-          : undefined,
+          : undefined
       }
     })
   entries.push(...feyzRoutes)
@@ -53,7 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // /tag/[tag] routes
   const tagRoutes = uniqTags.map((tag) => ({
     url: `${SITE_URL}/tag/${encodeURIComponent(tag)}`,
-    lastModified: undefined,
+    lastModified: undefined
   }))
   entries.push(...tagRoutes)
 
@@ -66,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const pages = pageFill(dataFilterByTag.length, DATA_PER_PAGE)
     const tagPageRoutes = pages.map((page) => ({
       url: `${SITE_URL}/tag/${encodeURIComponent(tag)}/${page}`,
-      lastModified: undefined,
+      lastModified: undefined
     }))
     entries.push(...tagPageRoutes)
   }
@@ -74,7 +74,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Paginated home pages /[page] for page 2+
   const homePageRoutes = pageFill(data.length, DATA_PER_PAGE).map((page) => ({
     url: `${SITE_URL}/${page}`,
-    lastModified: undefined,
+    lastModified: undefined
   }))
   entries.push(...homePageRoutes)
 

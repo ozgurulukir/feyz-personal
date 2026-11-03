@@ -17,13 +17,16 @@ const HTML_ENTITIES: Record<string, string> = {
   '&quot;': '"',
   '&#39;': "'",
   '&#x27;': "'",
-  '&nbsp;': ' ',
+  '&nbsp;': ' '
 }
 
 export function unescapeHtml(text: string): string {
   return text
     .replace(/<\/?[^>]+(>|$)/g, '')
-    .replace(/&amp;|&lt;|&gt;|&quot;|&#39;|&#x27;|&nbsp;/g, (match) => HTML_ENTITIES[match])
+    .replace(
+      /&amp;|&lt;|&gt;|&quot;|&#39;|&#x27;|&nbsp;/g,
+      (match) => HTML_ENTITIES[match]
+    )
     .replace(/\s+/g, ' ')
     .trim()
 }

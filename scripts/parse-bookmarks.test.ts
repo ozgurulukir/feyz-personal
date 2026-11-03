@@ -3,7 +3,7 @@ import {
   extractSourceUrl,
   normalizeUrl,
   parseBookmarksHtml,
-  unescapeHtml,
+  unescapeHtml
 } from './parse-bookmarks'
 
 describe('normalizeUrl', () => {

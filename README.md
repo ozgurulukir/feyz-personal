@@ -36,6 +36,7 @@ Mevcut Canlı Veri Tabanı: [Airtable Shared Base](https://airtable.com/shrTIyJJ
   - [4.2 Veri Akışı ve Önbellekleme Stratejisi](#42-veri-akışı-ve-önbellekleme-stratejisi)
   - [4.3 Statik Sayfa Üretimi (SSG) ve Sayfalama Algoritması](#43-statik-sayfa-üretimi-ssg-ve-sayfalama-algoritması)
   - [4.4 Güvenlik ve API Kotası Yönetimi](#44-güvenlik-ve-api-kotası-yönetimi)
+- [5. Teşekkür ve Lisans (Credits & License)](#5-teşekkür-ve-lisans-credits--license)
 
 ---
 
@@ -432,3 +433,12 @@ Sitede dinamik sunucu render'ı (SSR) yerine tamamen statik dışa aktarım (SSG
 - **Anahtar Güvenliği:** `AIRTABLE_API_KEY` değişkeni `NEXT_PUBLIC_` ön eki taşımaz. Sadece sunucu tarafında (Node.js derleme ortamında) çalışır ve istemci bundle'ına kesinlikle dahil edilmez.
 - **Kota Aşımını Önleme:** Airtable standart API'si saniyede 5 istek limiti uygular. Feyz.li, sayfaları derlerken `force-cache` kullanarak Airtable'a gönderilen istek sayısını minimize eder.
 - **Özyinelemeli Sayfalama (Pagination Offset):** 100 kayıttan fazla veri olduğunda Airtable yanıtındaki `offset` parametresi takip edilerek tüm veri kümesi tek bir derleme akışında eksiksiz biçimde toplanır.
+
+---
+
+## 5. Teşekkür ve Lisans (Credits & License)
+
+- **Orijinal Proje & Tasarım:** Feyz.li, [Adem İlter](https://github.com/ademilter) tarafından geliştirilen açık kaynaklı [`feyz`](https://github.com/ademilter/feyz) projesinin modernize edilmiş bir fork'udur.
+- **Yazılım Lisansı:** Web sitesi ve altyapı kodları [MIT Lisansı](./LICENSE) kapsamında dağıtılmaktadır (Copyright (c) 2020 Adem İlter, Copyright (c) 2026 Özgür Ulukır).
+- **İçerik Lisansı:** Airtable üzerindeki özgün yazılar ve alıntılar yazarlarına ait olup [LICENSE-posts.md](./LICENSE-posts.md) uyarınca korunmaktadır.
+

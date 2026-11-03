@@ -5,7 +5,12 @@ import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import { ReactNode } from 'react'
 import cx from '@/utils/cx'
-import { SITE_TITLE, SITE_DESCRIPTION, SITE_URL, SITE_TWITTER_HANDLE } from '@/utils/site'
+import {
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  SITE_URL,
+  SITE_TWITTER_HANDLE
+} from '@/utils/site'
 import AnalyticsWrapper from './analytics'
 import Header from '@/components/header'
 import Footer from '@/components/footer'

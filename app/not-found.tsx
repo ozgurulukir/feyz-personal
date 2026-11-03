@@ -5,11 +5,11 @@ export const revalidate = 21600 // 60 * 60 * 6 = 6 hours
 
 export default function NotFound() {
   return (
-    <Container className="py-24 text-center px-0">
-      <h1 className="font-display text-6xl font-black text-zinc-900 mb-4">
+    <Container className="px-0 py-24 text-center">
+      <h1 className="font-display mb-4 text-6xl font-black text-zinc-900">
         Sayfa bulunamadı
       </h1>
-      <p className="text-zinc-600 mb-8 max-w-md mx-auto">
+      <p className="mx-auto mb-8 max-w-md text-zinc-600">
         Aradığınız sayfa mevcut değil veya bağlantı bozuk olabilir.
       </p>
       <Link

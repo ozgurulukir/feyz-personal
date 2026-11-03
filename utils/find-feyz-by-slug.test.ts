@@ -6,7 +6,7 @@ function makeRecord(title: string | undefined): AirtableRecord {
   return {
     id: 'rec1',
     createdTime: '2024-01-01T00:00:00.000Z',
-    fields: title !== undefined ? { title } : {},
+    fields: title !== undefined ? { title } : {}
   }
 }
 
@@ -15,7 +15,7 @@ describe('findFeyzBySlug', () => {
     makeRecord('Hello World'),
     makeRecord('Feyz.li - Kişisel Web Sitesi'),
     makeRecord('Another Post'),
-    makeRecord(undefined),
+    makeRecord(undefined)
   ]
 
   it('finds exact slug match', () => {
