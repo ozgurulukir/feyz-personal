@@ -23,7 +23,7 @@ export default function Page({
     <>
       <Nav tags={tags} />
 
-      <div className="mt-8 divide-y border-y">
+      <div className="mt-8 divide-y divide-zinc-200 border-y border-zinc-200">
         {data.map((feyz: AirtableRecord) => (
           <Feyz key={feyz.id} feyz={feyz} />
         ))}

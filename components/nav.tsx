@@ -7,8 +7,11 @@ import { usePathname } from 'next/navigation'
 
 export default function AppNav({ tags }: { tags: string[] }) {
   return (
-    <nav className="mt-8 flex flex-wrap gap-x-3 gap-y-1">
-      <AppNavItem href="/">All</AppNavItem>
+    <nav
+      aria-label="Kategori navigasyonu"
+      className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2"
+    >
+      <AppNavItem href="/">Tümü</AppNavItem>
       {tags.map((tag) => (
         <AppNavItem href={`/tag/${tag}`} key={tag}>
           {tag}
@@ -30,10 +33,12 @@ function AppNavItem({
 
   return (
     <Link
+      aria-current={isActive ? 'page' : undefined}
       className={cx(
-        'font-display text-xl capitalize opacity-50',
-        'hover:underline hover:opacity-100',
-        isActive && 'underline opacity-100',
+        'font-display rounded-sm py-0.5 text-xl text-zinc-600 capitalize underline-offset-4 transition-colors duration-150',
+        'hover:text-zinc-900 hover:underline',
+        'focus-visible:outline-2 focus-visible:outline-offset-2',
+        isActive && 'font-bold text-zinc-900 underline',
         className
       )}
       {...props}

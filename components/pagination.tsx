@@ -24,7 +24,10 @@ export default function Pagination({
   const isActiveFirstPage = pathname === `/tag/${tag}` || pathname === '/'
 
   return (
-    <div className="font-display mt-8 flex items-center gap-3 text-4xl">
+    <nav
+      aria-label="Sayfalama"
+      className="font-display mt-8 flex flex-wrap items-center gap-2 text-3xl sm:text-4xl"
+    >
       {tag ? (
         <Item href={`/tag/${tag}`} active={isActiveFirstPage}>
           1
@@ -49,7 +52,7 @@ export default function Pagination({
           </Item>
         )
       })}
-    </div>
+    </nav>
   )
 }
 
@@ -62,7 +65,17 @@ function Item({
   active: boolean
 }) {
   return (
-    <Link className={cx('opacity-50', active && 'opacity-100')} {...props}>
+    <Link
+      aria-label={`Sayfa ${children}`}
+      aria-current={active ? 'page' : undefined}
+      className={cx(
+        'inline-flex min-h-[2.5rem] min-w-[2.5rem] items-center justify-center rounded-sm text-zinc-500 tabular-nums underline-offset-4 transition-colors duration-150',
+        'hover:text-zinc-900',
+        'focus-visible:outline-2 focus-visible:outline-offset-2',
+        active && 'font-bold text-zinc-900 underline'
+      )}
+      {...props}
+    >
       {children}
     </Link>
   )

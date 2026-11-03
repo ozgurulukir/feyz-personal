@@ -12,8 +12,13 @@ export default function AppHeader({ className, ...props }: IAppHeader) {
   return (
     <header className={cx('pt-8', className)} {...props}>
       <Container>
-        <h1 className="font-display text-8xl leading-none font-black hover:underline">
-          <Link href="/">{SITE_TITLE}</Link>
+        <h1 className="font-display text-6xl leading-none font-black tracking-tight sm:text-7xl md:text-8xl">
+          <Link
+            href="/"
+            className="rounded-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4"
+          >
+            {SITE_TITLE}
+          </Link>
         </h1>
       </Container>
     </header>

@@ -28,8 +28,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       )}
     >
       <body>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-zinc-900 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white focus:shadow-lg focus:ring-2 focus:ring-zinc-900 focus:ring-offset-2 focus:outline-none"
+        >
+          İçeriğe atla
+        </a>
         <Header />
-        <main>
+        <main id="main-content" tabIndex={-1} className="focus:outline-none">
           <Container>{children}</Container>
         </main>
         <Footer />
@@ -49,8 +55,12 @@ const interDisplay = localFont({
   variable: '--font-display',
   src: [
     {
-      path: './fonts/inter/Inter-DisplayMedium.woff2',
+      path: './fonts/inter/Inter-Display.woff2',
       weight: '400'
+    },
+    {
+      path: './fonts/inter/Inter-DisplayMedium.woff2',
+      weight: '500'
     },
     {
       path: './fonts/inter/Inter-DisplayBold.woff2',

@@ -66,14 +66,14 @@ export default async function FeyzDetail({
     <>
       <Nav tags={tags} />
 
-      <div className="mt-8 border-y">
+      <div className="mt-8 border-y border-zinc-200">
         <Feyz feyz={feyz} />
       </div>
 
       <div className="mt-8">
         <Link
           href="/"
-          className="font-display text-sm opacity-60 hover:underline hover:opacity-100"
+          className="font-display inline-flex items-center rounded-sm text-sm text-zinc-600 underline-offset-4 transition-colors hover:text-zinc-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
         >
           ← Tüm içerikler
         </Link>

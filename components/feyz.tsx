@@ -41,42 +41,62 @@ export default function Feyz({ feyz }: { feyz: AirtableRecord }) {
   }
 
   return (
-    <article className="flex gap-8 py-10">
-      <div className="grow">
+    <article className="flex flex-col-reverse gap-6 py-8 sm:flex-row sm:gap-8 sm:py-10">
+      <div className="min-w-0 grow">
         {isQuote ? (
-          <h2 className="font-display text-5xl leading-[1.2]">
-            <a target="_blank" rel="noopener noreferrer" href={url}>
+          <h2 className="font-display text-3xl leading-[1.2] break-words sm:text-4xl md:text-5xl">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={url}
+              className="rounded-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
               <Balancer>{title}</Balancer>
+              <span className="sr-only"> (yeni sekmede açılır)</span>
             </a>
           </h2>
         ) : (
           <>
-            <h2 className="font-display text-3xl leading-snug font-bold">
+            <h2 className="font-display text-2xl leading-snug font-bold break-words sm:text-3xl">
               <a
                 target="_blank"
                 rel="noopener noreferrer"
                 href={url}
-                className="visited:text-zinc-600"
+                className="rounded-sm underline-offset-4 visited:text-zinc-600 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 <Balancer>{title}</Balancer>
+                <span className="sr-only"> (yeni sekmede açılır)</span>
               </a>
             </h2>
-            {summary && <p className="mt-2 opacity-80">{summary}</p>}
+            {summary && (
+              <p className="mt-2 leading-relaxed text-pretty break-words text-zinc-700">
+                {summary}
+              </p>
+            )}
           </>
         )}
 
-        <footer className="mt-4 flex items-center gap-1 opacity-40">
-          <Link href={`/feyz/${slug}`}>{relativeDate || 'Bağlantı'}</Link>
+        <footer className="mt-4 flex flex-wrap items-center gap-1.5 text-sm text-zinc-600">
+          <Link
+            href={`/feyz/${slug}`}
+            className="rounded-sm tabular-nums underline-offset-2 hover:text-zinc-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            {relativeDate || 'Bağlantı'}
+          </Link>
 
           {sourceHostname && normalizedSourceUrl && (
             <>
-              <span className="opacity-60">/</span>
+              <span className="text-zinc-400 select-none" aria-hidden="true">
+                /
+              </span>
               <a
                 href={normalizedSourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="rounded-sm underline-offset-2 hover:text-zinc-900 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 {sourceHostname}
+                <span className="sr-only"> (yeni sekmede açılır)</span>
               </a>
             </>
           )}
@@ -84,13 +104,13 @@ export default function Feyz({ feyz }: { feyz: AirtableRecord }) {
       </div>
 
       {cover && (
-        <div className="w-1/3 shrink-0 pt-1">
+        <div className="w-full shrink-0 pt-1 sm:w-1/3">
           <Image
             src={cover.url}
             alt={title || ''}
             width={cover?.width || 400}
             height={cover?.height || 400}
-            className="rounded-lg"
+            className="w-full rounded-lg object-cover outline outline-1 -outline-offset-1 outline-black/10"
           />
         </div>
       )}
