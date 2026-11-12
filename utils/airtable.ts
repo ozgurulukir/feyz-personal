@@ -2,9 +2,7 @@ import { AirtableRecord } from '@/types/airtable'
 
 export const MAX_PAGINATION_DEPTH = 50
 export const FETCH_TIMEOUT_MS = 30000
-
-let cachedRecords: AirtableRecord[] | null = null
-let cachePromise: Promise<AirtableRecord[]> | null = null
+export const REVALIDATE_SECONDS = 21600
 
 export async function getRecords({
   pageSize = 100,
@@ -13,19 +11,6 @@ export async function getRecords({
   pageSize?: number
   offset?: string
 } = {}): Promise<AirtableRecord[]> {
-  const isDefaultCall = pageSize === 100 && offset === undefined
-
-  // Module-level singleton cache for the default getRecords({}) call.
-  // Ensures a single Airtable fetch per module lifetime across all SSR callers.
-  if (isDefaultCall) {
-    if (cachedRecords !== null) {
-      return cachedRecords
-    }
-    if (cachePromise !== null) {
-      return cachePromise
-    }
-  }
-
   const baseId = process.env.AIRTABLE_BASE_ID || 'appeqvrnUnbvHVDmH'
   const tableName = process.env.AIRTABLE_TABLE_NAME || 'content'
   const apiKey = process.env.AIRTABLE_API_KEY
@@ -47,60 +32,50 @@ export async function getRecords({
 
   async function getData(depth = 0): Promise<AirtableRecord[]> {
     if (depth > MAX_PAGINATION_DEPTH) {
-      console.error(
+      throw new Error(
         `Max pagination depth (${MAX_PAGINATION_DEPTH}) exceeded, stopping Airtable fetch`
       )
-      return []
     }
 
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
 
+    let res: Response
     try {
-      const res = await fetch(url.toString(), {
+      res = await fetch(url.toString(), {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${apiKey}`
         },
-        cache: 'force-cache',
+        next: { revalidate: REVALIDATE_SECONDS },
         signal: controller.signal
       })
-
+    } finally {
       clearTimeout(timeoutId)
-
-      if (!res.ok) {
-        console.error(
-          `Failed to fetch from Airtable: HTTP ${res.status} ${res.statusText}`
-        )
-        return []
-      }
-
-      const data = await res.json()
-      const records = Array.isArray(data.records) ? data.records : []
-
-      if (data.offset) {
-        url.searchParams.set('offset', data.offset)
-        const nextRecords = await getData(depth + 1)
-        return [...records, ...nextRecords]
-      }
-
-      return records
-    } catch (error) {
-      clearTimeout(timeoutId)
-      console.error('Error fetching records from Airtable:', error)
-      return []
     }
+
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch from Airtable: HTTP ${res.status} ${res.statusText}`
+      )
+    }
+
+    const data = await res.json()
+    const records = Array.isArray(data.records) ? data.records : []
+
+    if (data.offset) {
+      url.searchParams.set('offset', data.offset)
+      const nextRecords = await getData(depth + 1)
+      return [...records, ...nextRecords]
+    }
+
+    return records
   }
 
-  const fetchPromise = getData()
-
-  if (isDefaultCall) {
-    cachePromise = fetchPromise
-    cachePromise.then((records) => {
-      cachedRecords = records
-      cachePromise = null
-    })
+  try {
+    return await getData()
+  } catch (error) {
+    console.error('Error fetching records from Airtable:', error)
+    return []
   }
-
-  return fetchPromise
 }

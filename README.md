@@ -47,7 +47,7 @@ Bu eğitim, projeyi ilk defa çalıştıracak geliştiriciler için hazırlanmı
 
 Başlamadan önce çalışma ortamınızda aşağıdakilerin kurulu olduğundan emin olun:
 
-- **Node.js**: v20.x veya üzeri
+- **Node.js**: v22.18.x veya üzeri (yer imi içe aktarma betiği TypeScript'i doğrudan çalıştırdığı için)
 - **npm**: v10.x veya üzeri
 - **Git**
 - **Airtable Hesabı** ve bir [Personal Access Token](https://airtable.com/create/tokens) (`data.records:read` iznine sahip olmalıdır)
@@ -179,7 +179,7 @@ Feyz.li, Vercel platformuna özgü Incremental Static Regeneration (ISR) ve gör
 4. **Deploy** butonuna tıklayın.
 
 > [!IMPORTANT]
-> Next.js derleme esnasında (`generateStaticParams` ve `getRecords`) Airtable'dan tüm içerikleri çektiği için, `AIRTABLE_API_KEY` Vercel'e eklenmeden başlatılan derlemeler hata verir.
+> Next.js derleme esnasında (`generateStaticParams` ve `getRecords`) Airtable'dan tüm içerikleri çeker. `AIRTABLE_API_KEY` tanımlı değilse derleme uyarı verir ve **boş içerikle** tamamlanır; bu nedenle canlıya almadan önce anahtarı eklediğinizden emin olun.
 
 #### Yöntem B: Vercel CLI ile Komut Satırından Dağıtım
 
@@ -449,14 +449,14 @@ Veri çekme mekanizması [`utils/airtable.ts`](./utils/airtable.ts) içerisinded
 
 ```mermaid
 flowchart LR
-    A["Airtable REST API"] -->|"fetch (force-cache)"| B["getRecords()"]
+    A["Airtable REST API"] -->|"fetch (revalidate: 21600)"| B["getRecords()"]
     B -->|"Derleme Zamanı (SSG)"| C["Next.js App Router"]
     C -->|"export const revalidate = 21600"| D["Statik Sayfalar (ISR - 6 Saat)"]
 ```
 
-1. **`cache: 'force-cache'`:** Next.js veri çekme katmanında kullanılır. Derleme sırasında yinelenen API çağrıları engellenir ve yanıtlar yerel olarak önbelleğe alınır.
+1. **`next: { revalidate: 21600 }`:** Airtable isteği Next.js Data Cache'e alınır ve 6 saatte bir arka planda yenilenir. Böylece derleme sırasında yinelenen API çağrıları engellenir ve süreç ömrü boyunca sabit kalan bir bellek önbelleği oluşmaz.
 2. **`export const revalidate = 21600`:** Sayfa düzeyinde 6 saatlik (21.600 saniye) ISR (Incremental Static Regeneration) tanımlıdır. Airtable'a yeni içerik eklendiğinde sitenin tamamını yeniden derlemeye gerek kalmadan sayfalar arka planda periyodik olarak yenilenir.
-3. **Modül Düzeyi Tekil Önbellek (In-Memory Singleton Promise):** `getRecords({})` varsayılan çağrısı modül ömrü boyunca bellekteki tekil önbellek (`cachedRecords`) ve `cachePromise` yapısını kullanır. Böylece aynı çalışma sürecinde tekrarlı API çağrısı yapılmaz.
+3. **Hata Durumunda Önbellekleme Yok:** Airtable'dan alınan hatalı yanıtlar veya ağ hataları boş diziye dönüşür ve önbelleğe yazılmaz; geçici bir hata kalıcı olarak önbelleklenmez.
 
 ### 4.3 Statik Sayfa Üretimi (SSG) ve Sayfalama Algoritması
 
@@ -469,7 +469,7 @@ Sitede dinamik sunucu render'ı (SSR) yerine tamamen statik dışa aktarım (SSG
 ### 4.4 Güvenlik ve API Kotası Yönetimi
 
 - **Anahtar Güvenliği:** `AIRTABLE_API_KEY` değişkeni `NEXT_PUBLIC_` ön eki taşımaz. Sadece sunucu tarafında (Node.js derleme ortamında) çalışır ve istemci bundle'ına kesinlikle dahil edilmez.
-- **Kota Aşımını Önleme:** Airtable standart API'si saniyede 5 istek limiti uygular. Feyz.li, sayfaları derlerken `force-cache` kullanarak Airtable'a gönderilen istek sayısını minimize eder.
+- **Kota Aşımını Önleme:** Airtable standart API'si saniyede 5 istek limiti uygular. Feyz.li, `next: { revalidate: 21600 }` ile Next.js Data Cache'i kullanarak Airtable'a gönderilen istek sayısını minimize eder.
 - **Özyinelemeli Sayfalama (Pagination Offset):** 100 kayıttan fazla veri olduğunda Airtable yanıtındaki `offset` parametresi takip edilerek tüm veri kümesi tek bir derleme akışında eksiksiz biçimde toplanır.
 - **Zaman Aşımı ve Sonsuz Döngü Koruması:** `FETCH_TIMEOUT_MS = 30000` (30 saniye `AbortController` zaman aşımı) ve `MAX_PAGINATION_DEPTH = 50` sınırı ile ağ gecikmeleri veya beklenmeyen sayfalama döngüleri engellenir.
 

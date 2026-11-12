@@ -1,7 +1,7 @@
 'use client'
 
 import Link, { LinkProps } from 'next/link'
-import { pageFill } from '@/utils/helper'
+import { pageFill, safeDecode } from '@/utils/helper'
 import { DATA_PER_PAGE } from '@/utils/const'
 import cx from '@/utils/cx'
 import { usePathname } from 'next/navigation'
@@ -14,13 +14,14 @@ export default function Pagination({
   totalData: number
   tag?: string
 }) {
+  const pathname = safeDecode(usePathname())
+
   if (totalData <= DATA_PER_PAGE) {
     return null
   }
 
   const PAGES = pageFill(totalData, DATA_PER_PAGE)
-  const pathname = usePathname()
-
+  const encodedTag = tag ? encodeURIComponent(tag) : ''
   const isActiveFirstPage = pathname === `/tag/${tag}` || pathname === '/'
 
   return (
@@ -29,7 +30,7 @@ export default function Pagination({
       className="font-display mt-8 flex flex-wrap items-center gap-2 text-3xl sm:text-4xl"
     >
       {tag ? (
-        <Item href={`/tag/${tag}`} active={isActiveFirstPage}>
+        <Item href={`/tag/${encodedTag}`} active={isActiveFirstPage}>
           1
         </Item>
       ) : (
@@ -43,7 +44,11 @@ export default function Pagination({
           pathname === `/tag/${tag}/${page}` || pathname === `/${page}`
 
         return tag ? (
-          <Item key={page} href={`/tag/${tag}/${page}`} active={isActivePage}>
+          <Item
+            key={page}
+            href={`/tag/${encodedTag}/${page}`}
+            active={isActivePage}
+          >
             {page}
           </Item>
         ) : (

@@ -4,6 +4,7 @@ import Link, { LinkProps } from 'next/link'
 import cx from '@/utils/cx'
 import { HTMLAttributes } from 'react'
 import { usePathname } from 'next/navigation'
+import { safeDecode } from '@/utils/helper'
 
 export default function AppNav({ tags }: { tags: string[] }) {
   return (
@@ -13,7 +14,7 @@ export default function AppNav({ tags }: { tags: string[] }) {
     >
       <AppNavItem href="/">Tümü</AppNavItem>
       {tags.map((tag) => (
-        <AppNavItem href={`/tag/${tag}`} key={tag}>
+        <AppNavItem href={`/tag/${encodeURIComponent(tag)}`} key={tag}>
           {tag}
         </AppNavItem>
       ))}
@@ -27,9 +28,13 @@ function AppNavItem({
   ...props
 }: LinkProps & HTMLAttributes<HTMLAnchorElement>) {
   const pathname = usePathname()
+  const decodedPathname = safeDecode(pathname)
+  const decodedHref =
+    typeof props.href === 'string' ? safeDecode(props.href) : null
   const isActive =
-    pathname === props.href ||
-    (props.href !== '/' && pathname.startsWith(`${props.href}/`))
+    decodedHref !== null &&
+    (decodedPathname === decodedHref ||
+      (decodedHref !== '/' && decodedPathname.startsWith(`${decodedHref}/`)))
 
   return (
     <Link

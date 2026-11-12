@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import slugify from 'slugify'
 import { getRecords } from '@/utils/airtable'
 import { DATA_PER_PAGE } from '@/utils/const'
-import { pageFill } from '@/utils/helper'
+import { pageFill, toDate } from '@/utils/helper'
 import { AirtableRecord } from '@/types/airtable'
 import { SITE_URL } from '@/utils/site'
 
@@ -15,9 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${SITE_URL}/`,
       lastModified:
-        data.length > 0 && data[0]?.fields?.createdDate
-          ? new Date(data[0].fields.createdDate)
-          : undefined
+        data.length > 0 ? toDate(data[0]?.fields?.createdDate) : undefined
     }
   ]
 
@@ -36,9 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
       return {
         url: `${SITE_URL}/feyz/${slug}`,
-        lastModified: item.fields?.createdDate
-          ? new Date(item.fields.createdDate)
-          : undefined
+        lastModified: toDate(item.fields?.createdDate)
       }
     })
   entries.push(...feyzRoutes)

@@ -3,7 +3,6 @@ import { getRecords } from '@/utils/airtable'
 import Page from '@/components/page'
 import { DATA_PER_PAGE } from '@/utils/const'
 import { AirtableRecord } from '@/types/airtable'
-import { SITE_TITLE } from '@/utils/site'
 
 export const revalidate = 21600 // 6 hours
 
@@ -22,10 +21,9 @@ export async function generateMetadata({
   params: Promise<{ tag: string }>
 }): Promise<Metadata> {
   const { tag } = await params
-  const decodedTag = decodeURIComponent(tag)
   return {
-    title: `${decodedTag} - ${SITE_TITLE}`,
-    description: `${decodedTag} etiketine ait içerikler`
+    title: tag,
+    description: `${tag} etiketine ait içerikler`
   }
 }
 
@@ -35,11 +33,9 @@ export default async function Tag({
   params: Promise<{ tag: string }>
 }) {
   const { tag } = await params
-  const decodedTag = decodeURIComponent(tag)
   const data: AirtableRecord[] = await getRecords({})
   const dataFilterByTag = data.filter(
-    (item) =>
-      Array.isArray(item.fields?.tags) && item.fields.tags.includes(decodedTag)
+    (item) => Array.isArray(item.fields?.tags) && item.fields.tags.includes(tag)
   )
   const filterData = dataFilterByTag.slice(0, DATA_PER_PAGE)
 
@@ -48,7 +44,7 @@ export default async function Tag({
       rawData={data}
       data={filterData}
       totalData={dataFilterByTag.length}
-      tag={decodedTag}
+      tag={tag}
     />
   )
 }

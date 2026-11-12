@@ -22,7 +22,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { page } = await params
   return {
-    title: `Sayfa ${page} - ${SITE_TITLE}`,
+    title: `Sayfa ${page}`,
     description: `${SITE_TITLE} içerikleri - Sayfa ${page}`
   }
 }
@@ -35,7 +35,7 @@ export default async function Home({
   const { page } = await params
   const pageNumber = Number(page)
 
-  if (isNaN(pageNumber) || pageNumber < 2) {
+  if (!Number.isInteger(pageNumber) || pageNumber < 2) {
     notFound()
   }
 

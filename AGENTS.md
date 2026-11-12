@@ -86,8 +86,9 @@ Path alias: `@/*` maps to the repo root (e.g. `@/components/page`, `@/utils/cons
 ## Content / Data Flow
 
 - `getRecords({ pageSize, offset })` fetches Airtable content, sorted by `createdDate` desc,
-  with `filterByFormula: draft=FALSE()` and `view: 'Grid view'`. Uses in-memory singleton promise
-  caching across default calls and `cache: 'force-cache'` for build-time caching. Guarded by
+  with `filterByFormula: draft=FALSE()` and `view: 'Grid view'`. Uses
+  `next: { revalidate: 21600 }` so Next's Data Cache deduplicates and refreshes the response;
+  failures are logged and return `[]` without being cached. Guarded by
   `MAX_PAGINATION_DEPTH = 50` and `FETCH_TIMEOUT_MS = 30000`. Configurable via `AIRTABLE_BASE_ID`
   and `AIRTABLE_TABLE_NAME`. If `AIRTABLE_API_KEY` is missing or fetch fails, warns and returns `[]`.
 - Schema template is defined in `airtable-template.csv` with fields: `title`, `url`, `summary`,

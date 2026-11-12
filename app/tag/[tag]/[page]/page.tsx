@@ -5,7 +5,6 @@ import Page from '@/components/page'
 import { DATA_PER_PAGE } from '@/utils/const'
 import { AirtableRecord } from '@/types/airtable'
 import { pageFill } from '@/utils/helper'
-import { SITE_TITLE } from '@/utils/site'
 
 export async function generateStaticParams() {
   const data: AirtableRecord[] = await getRecords({})
@@ -30,10 +29,9 @@ export async function generateMetadata({
   params: Promise<{ tag: string; page: string }>
 }): Promise<Metadata> {
   const { tag, page } = await params
-  const decodedTag = decodeURIComponent(tag)
   return {
-    title: `${decodedTag} - Sayfa ${page} - ${SITE_TITLE}`,
-    description: `${decodedTag} etiketine ait içerikler - Sayfa ${page}`
+    title: `${tag} - Sayfa ${page}`,
+    description: `${tag} etiketine ait içerikler - Sayfa ${page}`
   }
 }
 
@@ -43,17 +41,15 @@ export default async function Tag({
   params: Promise<{ tag: string; page: string }>
 }) {
   const { tag, page } = await params
-  const decodedTag = decodeURIComponent(tag)
   const pageNumber = Number(page)
 
-  if (isNaN(pageNumber) || pageNumber < 2) {
+  if (!Number.isInteger(pageNumber) || pageNumber < 2) {
     notFound()
   }
 
   const data: AirtableRecord[] = await getRecords({})
   const dataFilterByTag = data.filter(
-    (item) =>
-      Array.isArray(item.fields?.tags) && item.fields.tags.includes(decodedTag)
+    (item) => Array.isArray(item.fields?.tags) && item.fields.tags.includes(tag)
   )
 
   const startIndex = (pageNumber - 1) * DATA_PER_PAGE
@@ -71,7 +67,7 @@ export default async function Tag({
       rawData={data}
       data={filterData}
       totalData={dataFilterByTag.length}
-      tag={decodedTag}
+      tag={tag}
     />
   )
 }
